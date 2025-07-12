@@ -122,6 +122,12 @@ export default {
     },
     methods: {
         async load() {
+            console.log("加载宿管信息，参数:", {
+                pageNum: this.currentPage,
+                pageSize: this.pageSize,
+                search: this.search,
+            });
+            
             request.get("/dormManager/find", {
                 params: {
                     pageNum: this.currentPage,
@@ -129,10 +135,14 @@ export default {
                     search: this.search,
                 },
             }).then((res) => {
-                console.log(res);
+                console.log("宿管信息查询结果:", res);
                 this.tableData = res.data.records;
                 this.total = res.data.total;
                 this.loading = false;
+            }).catch((error) => {
+                console.error("宿管信息查询失败:", error);
+                this.loading = false;
+                ElMessage.error("查询失败");
             });
         },
         reset() {

@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/room")
+@RequestMapping("/api/room")
 public class DormRoomController {
 
     @Resource

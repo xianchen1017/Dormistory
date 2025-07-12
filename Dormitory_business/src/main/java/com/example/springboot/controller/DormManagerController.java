@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/dormManager")
+@RequestMapping("/api/dormManager")
 public class DormManagerController {
 
     @Resource

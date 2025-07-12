@@ -41,9 +41,10 @@
           <el-table-column label="手机号" prop="phoneNum"/>
           <el-table-column :show-overflow-tooltip="true" label="邮箱" prop="email"/>
           <!--      操作栏-->
-          <el-table-column label="操作" width="130px">
+          <el-table-column label="操作" width="200px">
             <template #default="scope">
               <el-button icon="Edit" type="primary" @click="handleEdit(scope.row)"></el-button>
+              <el-button v-if="judgeIdentity()===1" icon="House" type="success" @click="assignRoom(scope.row)">分配房间</el-button>
               <el-popconfirm title="确认删除？" @confirm="handleDelete(scope.row.username)">
                 <template #reference>
                   <el-button icon="Delete" type="danger"></el-button>
@@ -109,6 +110,52 @@
               <span class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="save">确 定</el-button>
+              </span>
+            </template>
+          </el-dialog>
+          
+          <!-- 分配房间弹窗 -->
+          <el-dialog v-model="assignRoomDialog" title="分配房间" width="40%" @close="cancelAssignRoom">
+            <el-form ref="assignRoomForm" :model="assignRoomForm" :rules="assignRoomRules" label-width="120px">
+              <el-form-item label="学生学号" prop="username">
+                <el-input v-model="assignRoomForm.username" disabled style="width: 80%"></el-input>
+              </el-form-item>
+              <el-form-item label="学生姓名" prop="name">
+                <el-input v-model="assignRoomForm.name" disabled style="width: 80%"></el-input>
+              </el-form-item>
+              <el-form-item label="楼栋号" prop="dormBuildId">
+                <el-select v-model="assignRoomForm.dormBuildId" placeholder="请选择楼栋" style="width: 80%" @change="loadRooms">
+                  <el-option label="1号楼" :value="1"></el-option>
+                  <el-option label="2号楼" :value="2"></el-option>
+                  <el-option label="3号楼" :value="3"></el-option>
+                  <el-option label="4号楼" :value="4"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="房间号" prop="dormRoomId">
+                <el-select v-model="assignRoomForm.dormRoomId" placeholder="请选择房间" style="width: 80%" @change="loadBeds">
+                  <el-option 
+                    v-for="room in availableRooms" 
+                    :key="room.dormRoomId" 
+                    :label="`${room.dormRoomId} (${room.currentCapacity}/${room.maxCapacity})`" 
+                    :value="room.dormRoomId">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="床位号" prop="bedId">
+                <el-select v-model="assignRoomForm.bedId" placeholder="请选择床位" style="width: 80%">
+                  <el-option 
+                    v-for="bed in availableBeds" 
+                    :key="bed.id" 
+                    :label="`${bed.name}号床`" 
+                    :value="bed.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="cancelAssignRoom">取 消</el-button>
+                <el-button type="primary" @click="saveAssignRoom">确 定</el-button>
               </span>
             </template>
           </el-dialog>

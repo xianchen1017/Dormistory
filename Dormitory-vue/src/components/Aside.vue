@@ -158,6 +158,7 @@ export default {
       } else if (this.identity === 'admin') {
         return 2
       } else {
+        console.warn("未知身份:", this.identity);
         return 0 // 默认为学生身份
       }
     }

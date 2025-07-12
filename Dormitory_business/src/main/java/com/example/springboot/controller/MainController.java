@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/api/main")
 public class MainController {
 
     /**

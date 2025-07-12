@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/visitor")
+@RequestMapping("/api/visitor")
 public class VisitorController {
 
     @Resource

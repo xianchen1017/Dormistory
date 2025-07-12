@@ -34,7 +34,9 @@ public class VisitorServiceImpl extends ServiceImpl<VisitorMapper, Visitor> impl
 //        return visitorMapper.selectPage(new Page<>(pageNum, pageSize), new QueryWrapper<Visitor>().like("name", search));
         Page newPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Visitor> qw = new QueryWrapper<>();
-        qw.like("name", search);
+        if (search != null && !search.trim().isEmpty()) {
+            qw.like("name", search);
+        }
         Page visitorPage = visitorMapper.selectPage(newPage, qw);
         return visitorPage;
     }

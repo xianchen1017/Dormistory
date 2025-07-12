@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         async load() {
-            request.get("/building/find", {
+            request.get("building/find", {
                 params: {
                     pageNum: this.currentPage,
                     pageSize: this.pageSize,

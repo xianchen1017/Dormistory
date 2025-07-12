@@ -44,11 +44,14 @@ export default {
             disabled: false,
             judge: false,
             dialogVisible: false,
+            assignRoomDialog: false,
             search: "",
             currentPage: 1,
             pageSize: 10,
             total: 0,
             tableData: [],
+            availableRooms: [],
+            availableBeds: [],
             form: {
                 username: "",
                 name: "",
@@ -56,6 +59,13 @@ export default {
                 gender: "",
                 phoneNum: "",
                 email: "",
+            },
+            assignRoomForm: {
+                username: "",
+                name: "",
+                dormBuildId: "",
+                dormRoomId: "",
+                bedId: ""
             },
             rules: {
                 username: [
@@ -99,6 +109,11 @@ export default {
                 ],
                 checkPass: [{validator: checkPass, trigger: "blur"}],
             },
+            assignRoomRules: {
+                dormBuildId: [{required: true, message: "请选择楼栋", trigger: "change"}],
+                dormRoomId: [{required: true, message: "请选择房间", trigger: "change"}],
+                bedId: [{required: true, message: "请选择床位", trigger: "change"}],
+            },
             editDisplay: {
                 display: "block",
             },
@@ -117,6 +132,12 @@ export default {
     },
     methods: {
         async load() {
+            console.log("加载学生信息，参数:", {
+                pageNum: this.currentPage,
+                pageSize: this.pageSize,
+                search: this.search,
+            });
+            
             request.get("/stu/find", {
                 params: {
                     pageNum: this.currentPage,
@@ -124,10 +145,14 @@ export default {
                     search: this.search,
                 },
             }).then((res) => {
-                console.log(res);
+                console.log("学生信息查询结果:", res);
                 this.tableData = res.data.records;
                 this.total = res.data.total;
                 this.loading = false;
+            }).catch((error) => {
+                console.error("学生信息查询失败:", error);
+                this.loading = false;
+                ElMessage.error("查询失败");
             });
         },
         reset() {
@@ -268,6 +293,151 @@ export default {
             //改变页码
             this.currentPage = pageNum;
             this.load();
+        },
+        
+        // 分配房间相关方法
+        assignRoom(row) {
+            this.assignRoomDialog = true;
+            this.$nextTick(() => {
+                this.$refs.assignRoomForm.resetFields();
+                this.assignRoomForm.username = row.username;
+                this.assignRoomForm.name = row.name;
+                this.assignRoomForm.dormBuildId = "";
+                this.assignRoomForm.dormRoomId = "";
+                this.assignRoomForm.bedId = "";
+                this.availableRooms = [];
+                this.availableBeds = [];
+            });
+        },
+        
+        loadRooms() {
+            if (!this.assignRoomForm.dormBuildId) return;
+            
+            // 加载指定楼栋的空房间
+            request.get("/room/find", {
+                params: {
+                    pageNum: 1,
+                    pageSize: 100,
+                    search: "",
+                },
+            }).then((res) => {
+                if (res.code === "0") {
+                    // 过滤出指定楼栋且未满的房间
+                    this.availableRooms = res.data.records.filter(room => 
+                        room.dormBuildId === this.assignRoomForm.dormBuildId && 
+                        room.currentCapacity < room.maxCapacity
+                    );
+                    console.log("可用房间:", this.availableRooms);
+                }
+            }).catch((error) => {
+                console.error("加载房间失败:", error);
+                ElMessage.error("加载房间失败");
+            });
+        },
+        
+        loadBeds() {
+            if (!this.assignRoomForm.dormRoomId) return;
+            
+            // 找到选中的房间
+            const selectedRoom = this.availableRooms.find(room => room.dormRoomId === this.assignRoomForm.dormRoomId);
+            if (!selectedRoom) return;
+            
+            // 找出空床位
+            this.availableBeds = [];
+            if (!selectedRoom.firstBed) {
+                this.availableBeds.push({id: 1, name: "1"});
+            }
+            if (!selectedRoom.secondBed) {
+                this.availableBeds.push({id: 2, name: "2"});
+            }
+            if (!selectedRoom.thirdBed) {
+                this.availableBeds.push({id: 3, name: "3"});
+            }
+            if (!selectedRoom.fourthBed) {
+                this.availableBeds.push({id: 4, name: "4"});
+            }
+            
+            console.log("可用床位:", this.availableBeds);
+        },
+        
+        saveAssignRoom() {
+            this.$refs.assignRoomForm.validate(async (valid) => {
+                if (valid) {
+                    // 检查学生是否已有房间
+                    request.get("/room/judgeHadBed/" + this.assignRoomForm.username).then((res) => {
+                        if (res.code === "0") {
+                            // 学生没有房间，可以分配
+                            this.doAssignRoom();
+                        } else {
+                            ElMessage.error("该学生已有房间，无法重复分配");
+                        }
+                    }).catch((error) => {
+                        console.error("检查学生房间状态失败:", error);
+                        ElMessage.error("检查学生房间状态失败");
+                    });
+                }
+            });
+        },
+        
+        doAssignRoom() {
+            // 找到选中的房间
+            const selectedRoom = this.availableRooms.find(room => room.dormRoomId === this.assignRoomForm.dormRoomId);
+            if (!selectedRoom) {
+                ElMessage.error("房间信息错误");
+                return;
+            }
+            
+            // 更新房间信息
+            const bedName = this.getBedName(this.assignRoomForm.bedId);
+            const updatedRoom = {
+                ...selectedRoom,
+                [bedName]: this.assignRoomForm.username,
+                currentCapacity: selectedRoom.currentCapacity + 1
+            };
+            
+            request.put("/room/update", updatedRoom).then((res) => {
+                if (res.code === "0") {
+                    ElMessage.success("房间分配成功");
+                    this.assignRoomDialog = false;
+                    this.load(); // 刷新学生列表
+                } else {
+                    ElMessage.error(res.msg || "分配失败");
+                }
+            }).catch((error) => {
+                console.error("分配房间失败:", error);
+                ElMessage.error("分配房间失败");
+            });
+        },
+        
+        getBedName(bedId) {
+            switch (bedId) {
+                case 1: return "firstBed";
+                case 2: return "secondBed";
+                case 3: return "thirdBed";
+                case 4: return "fourthBed";
+                default: return "";
+            }
+        },
+        
+        cancelAssignRoom() {
+            this.assignRoomDialog = false;
+            this.$refs.assignRoomForm.resetFields();
+            this.availableRooms = [];
+            this.availableBeds = [];
+        },
+        
+        // 身份判断方法
+        judgeIdentity() {
+            const identity = sessionStorage.getItem('identity');
+            if (identity === 'stu') {
+                return 0;
+            } else if (identity === 'dormManager') {
+                return 1;
+            } else if (identity === 'admin') {
+                return 2;
+            } else {
+                return 0;
+            }
         },
     },
 };

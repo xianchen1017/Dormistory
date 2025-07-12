@@ -21,7 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/files")
+@RequestMapping("/api/files")
 public class FileController {
 
     private static final String ip = "http://localhost";

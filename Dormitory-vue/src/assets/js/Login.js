@@ -24,13 +24,13 @@ export default {
     methods: {
         async login() {
             try {
-                const res = await request.post(
-                    `/${this.form.identity}/login`,
-                    {
-                        username: this.form.username,
-                        password: this.form.password
-                    }
-                );
+                            const res = await request.post(
+                `/${this.form.identity}/login`,
+                {
+                    username: this.form.username,
+                    password: this.form.password
+                }
+            );
                 console.log("登录响应:", res);
 
                 if (res.code === "0") {

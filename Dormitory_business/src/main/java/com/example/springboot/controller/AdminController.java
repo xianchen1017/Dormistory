@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     String uid = new UID().produceUID();

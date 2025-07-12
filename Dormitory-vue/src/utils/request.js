@@ -13,8 +13,9 @@ request.interceptors.request.use(config => {
     const user = sessionStorage.getItem('user');
     // 排除登录路径
     if (
-        config.url !== '/stu/login' &&
         config.url !== '/api/stu/login' &&
+        config.url !== '/api/dormManager/login' &&
+        config.url !== '/api/admin/login' &&
         user
     ) {
         // 使用session认证，不需要额外的Authorization头

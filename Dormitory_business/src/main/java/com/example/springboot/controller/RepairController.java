@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/repair")
+@RequestMapping("/api/repair")
 public class RepairController {
 
     @Resource
