@@ -132,7 +132,9 @@ export default {
                     if (this.judgeOption === false) {
                         //修改
                         this.judgeOrderState(this.form.state)
-                        request.put("/adjustRoom/update/" + this.orderState, this.form).then((res) => {
+                        // 确保orderState是字符串类型
+                        const stateParam = this.orderState ? "true" : "false";
+                        request.put("/adjustRoom/update/" + stateParam, this.form).then((res) => {
                             if (res.code === "0") {
                                 ElMessage({
                                     message: "修改成功",
@@ -158,7 +160,19 @@ export default {
                         });
                     } else if (this.judgeOption === true) {
                         //添加
-                        request.post("/adjustRoom/add", this.form).then((res) => {
+                        // 确保数据类型正确
+                        const formData = {
+                            ...this.form,
+                            currentRoomId: parseInt(this.form.currentRoomId),
+                            currentBedId: parseInt(this.form.currentBedId),
+                            towardsRoomId: parseInt(this.form.towardsRoomId),
+                            towardsBedId: parseInt(this.form.towardsBedId),
+                            applyTime: new Date().toISOString().slice(0, 19).replace('T', ' '), // 添加申请时间
+                            state: '未处理' // 设置初始状态
+                        };
+                        
+                        console.log("提交的调宿申请数据:", formData);
+                        request.post("/adjustRoom/add", formData).then((res) => {
                             if (res.code === "0") {
                                 ElMessage({
                                     message: "添加成功",
@@ -173,6 +187,12 @@ export default {
                                     type: "error",
                                 });
                             }
+                        }).catch((error) => {
+                            console.error("调宿申请添加失败:", error);
+                            ElMessage({
+                                message: "添加失败，请检查数据格式",
+                                type: "error",
+                            });
                         });
                     }
                 }

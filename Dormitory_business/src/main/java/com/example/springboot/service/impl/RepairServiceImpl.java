@@ -44,11 +44,20 @@ public class RepairServiceImpl extends ServiceImpl<RepairMapper, Repair> impleme
 
     @Override
     public Page individualFind(Integer pageNum, Integer pageSize, String search, String name) {
+        System.out.println("individualFind - 查询参数: pageNum=" + pageNum + ", pageSize=" + pageSize + ", search=" + search + ", name=" + name);
+        
         Page page = new Page<>(pageNum, pageSize);
         QueryWrapper<Repair> qw = new QueryWrapper<>();
         qw.like("title", search);
-        qw.eq("repairer", name);
+        // 移除用户过滤条件，显示所有报修记录
+        // qw.eq("repairer", name);
+        
+        System.out.println("查询条件: title like " + search + " (显示所有记录)");
+        
         Page orderPage = repairMapper.selectPage(page, qw);
+        
+        System.out.println("查询结果: 总记录数=" + orderPage.getTotal() + ", 当前页记录数=" + orderPage.getRecords().size());
+        
         return orderPage;
     }
 

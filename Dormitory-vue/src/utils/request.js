@@ -10,15 +10,15 @@ const request = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use(config => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    // 排除登录路径 `/stu/login` 和 `/api/stu/login`
+    const user = sessionStorage.getItem('user');
+    // 排除登录路径
     if (
         config.url !== '/stu/login' &&
         config.url !== '/api/stu/login' &&
-        user &&
-        user.token
+        user
     ) {
-        config.headers['Authorization'] = `Bearer ${user.token}`;
+        // 使用session认证，不需要额外的Authorization头
+        // Spring Security会自动处理session认证
     }
     return config;
 }, error => {
@@ -29,7 +29,7 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use(
     response => {
         if (response.data.code === "401") {
-            localStorage.clear()
+            sessionStorage.clear()
             window.location.href = '/login'
         }
         return {
@@ -40,7 +40,7 @@ request.interceptors.response.use(
     },
     error => {
         if (error.response && error.response.status === 401) {
-            localStorage.clear()
+            sessionStorage.clear()
             window.location.href = '/login'
         }
         return Promise.reject(error)
