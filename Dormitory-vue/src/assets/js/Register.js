@@ -24,21 +24,21 @@ export function useRegister() {
     const rules = reactive({
         username: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 4, max: 16, message: '长度在 4 到 16 个字符', trigger: 'blur' }
+            { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
         ],
         password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
             { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
-            {
-                validator: (rule, value, callback) => {
-                    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,20}$/.test(value)) {
-                        callback(new Error('密码必须包含大小写字母和数字'))
-                    } else {
-                        callback()
-                    }
-                },
-                trigger: 'blur'
-            }
+            // {
+            //     validator: (rule, value, callback) => {
+            //         if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{6,20}$/.test(value)) {
+            //             callback(new Error('密码必须包含大小写字母和数字'))
+            //         } else {
+            //             callback()
+            //         }
+            //     },
+            //     trigger: 'blur'
+            // }
         ],
         confirmPassword: [
             { required: true, message: '请再次输入密码', trigger: 'blur' },
@@ -55,7 +55,7 @@ export function useRegister() {
         ],
         studentId: [
             { required: true, message: '请输入学号', trigger: 'blur' },
-            { pattern: /^\d{5}$/, message: '学号必须为5 位数字', trigger: 'blur' }
+            { min: 5, max: 5, message: '学号必须为5  个字符', trigger: 'blur' }
         ],
         phone: [
             { required: true, message: '请输入手机号', trigger: 'blur' },

@@ -5,6 +5,7 @@ import com.example.springboot.common.Result;
 import com.example.springboot.entity.Student;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.StudentService;
+import com.example.springboot.service.DormRoomService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,6 +18,9 @@ public class StudentController {
 
     @Resource
     private StudentService studentService;
+    
+    @Resource
+    private DormRoomService dormRoomService;
 
     /**
      * 学生注册
@@ -87,11 +91,27 @@ public class StudentController {
      */
     @DeleteMapping("/delete/{username}")
     public Result<?> delete(@PathVariable String username) {
-        int i = studentService.deleteStudent(username);
-        if (i == 1) {
-            return Result.success();
-        } else {
-            return Result.error("-1", "删除失败");
+        try {
+            System.out.println("开始删除学生: " + username);
+            
+            // 1. 先释放该学生的床位
+            System.out.println("步骤1: 释放学生床位");
+            dormRoomService.releaseBedByStudent(username);
+            
+            // 2. 删除学生信息
+            System.out.println("步骤2: 删除学生信息");
+            int i = studentService.deleteStudent(username);
+            if (i == 1) {
+                System.out.println("学生 " + username + " 删除成功");
+                return Result.success();
+            } else {
+                System.out.println("学生 " + username + " 删除失败");
+                return Result.error("-1", "删除失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("删除学生 " + username + " 时发生异常: " + e.getMessage());
+            return Result.error("-1", "删除学生时发生错误: " + e.getMessage());
         }
     }
 

@@ -45,4 +45,7 @@ public interface DormRoomService extends IService<DormRoom> {
 
     // 检查床位是否有人
     DormRoom checkBedState(Integer dormRoomId, int bedNum);
+    
+    // 根据学生用户名释放床位
+    void releaseBedByStudent(String username);
 }

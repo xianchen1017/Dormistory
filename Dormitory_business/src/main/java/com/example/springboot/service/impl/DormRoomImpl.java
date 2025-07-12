@@ -235,5 +235,59 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
         return dormRoom;
     }
 
+    /**
+     * 根据学生用户名释放床位
+     */
+    @Override
+    public void releaseBedByStudent(String username) {
+        System.out.println("开始释放学生 " + username + " 的床位...");
+        
+        // 1. 查找该学生所在的房间
+        DormRoom dormRoom = dormRoomMapper.findByStudentUsername(username);
+        if (dormRoom == null) {
+            System.out.println("学生 " + username + " 没有分配房间，无需释放床位");
+            return; // 学生没有分配房间，直接返回
+        }
+        
+        System.out.println("找到学生 " + username + " 所在的房间，房间ID: " + dormRoom.getDormRoomId());
+        System.out.println("当前床位信息：first_bed=" + dormRoom.getFirstBed() + 
+                          ", second_bed=" + dormRoom.getSecondBed() + 
+                          ", third_bed=" + dormRoom.getThirdBed() + 
+                          ", fourth_bed=" + dormRoom.getFourthBed());
+        
+        // 2. 使用UpdateWrapper来确保字段被正确设置为null
+        UpdateWrapper<DormRoom> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("dormroom_id", dormRoom.getDormRoomId());
+        
+        // 3. 找到对应床位并置空
+        String bedField = null;
+        if (username.equals(dormRoom.getFirstBed())) {
+            updateWrapper.set("first_bed", null);
+            bedField = "first_bed";
+        } else if (username.equals(dormRoom.getSecondBed())) {
+            updateWrapper.set("second_bed", null);
+            bedField = "second_bed";
+        } else if (username.equals(dormRoom.getThirdBed())) {
+            updateWrapper.set("third_bed", null);
+            bedField = "third_bed";
+        } else if (username.equals(dormRoom.getFourthBed())) {
+            updateWrapper.set("fourth_bed", null);
+            bedField = "fourth_bed";
+        }
+        
+        // 4. 更新房间当前人数
+        int newCapacity = dormRoom.getCurrentCapacity() - 1;
+        updateWrapper.set("current_capacity", newCapacity);
+        
+        // 5. 执行更新操作
+        int result = dormRoomMapper.update(null, updateWrapper);
+        
+        if (result > 0) {
+            System.out.println("成功释放学生 " + username + " 的床位，房间ID: " + dormRoom.getDormRoomId() + 
+                              "，床位字段: " + bedField + "，新人数: " + newCapacity);
+        } else {
+            System.out.println("释放学生 " + username + " 床位失败，更新结果: " + result);
+        }
+    }
 
 }
