@@ -7,6 +7,7 @@ import com.example.springboot.entity.Student;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.StudentService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 
@@ -25,15 +26,22 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
      */
     @Override
     public Student stuLogin(String username, String password) {
+        System.out.println("登录尝试 - 用户名: " + username);
+
+        // 直接查询用户
         QueryWrapper<Student> qw = new QueryWrapper<>();
         qw.eq("username", username);
-        qw.eq("password", password);
         Student student = studentMapper.selectOne(qw);
+
+        System.out.println("查询结果: " + student);
+
         if (student != null) {
-            return student;
-        } else {
-            return null;
+            // 直接比较明文密码
+            if (student.getPassword().equals(password)) {
+                return student;
+            }
         }
+        return null;
     }
 
     /**
@@ -41,8 +49,15 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
      */
     @Override
     public int addNewStudent(Student student) {
-        int insert = studentMapper.insert(student);
-        return insert;
+        System.out.println("准备插入的学生数据: " + student);
+        try {
+            int result = studentMapper.insert(student);
+            System.out.println("插入结果: " + result);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**

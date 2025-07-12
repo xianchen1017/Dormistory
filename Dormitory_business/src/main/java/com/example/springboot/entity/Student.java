@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @TableName(value = "student")
 public class Student {
     // 告诉Mybatis-plus, 属性对应表中的字段
-
     @TableId(value = "username")
     private String username;
     @TableField("password")
