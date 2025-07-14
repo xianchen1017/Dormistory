@@ -55,6 +55,7 @@ export default {
             form: {
                 username: "",
                 name: "",
+                classroom: "",
                 age: "",
                 gender: "",
                 phoneNum: "",

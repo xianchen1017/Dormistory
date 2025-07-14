@@ -14,7 +14,7 @@
                 </el-form-item>
                 <el-form-item :model="form" prop="identity">
                     <el-radio v-model="form.identity" label="stu" style="color: grey">学生</el-radio>
-                    <el-radio v-model="form.identity" label="dormManager" style="color: grey">教师</el-radio>
+                    <el-radio v-model="form.identity" label="dormManager" style="color: grey">宿舍管理员</el-radio>
                     <el-radio v-model="form.identity" label="admin" style="color: grey">系统管理员</el-radio>
                 </el-form-item>
                 <el-form-item>

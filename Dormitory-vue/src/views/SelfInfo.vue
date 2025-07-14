@@ -82,6 +82,18 @@
                             {{ phoneNum }}
                         </el-descriptions-item>
                         <el-descriptions-item>
+                          <!--增加班级-->
+                          <template #label>
+                            <div>
+                              <el-icon>
+                                <user/>
+                              </el-icon>
+                              所属
+                            </div>
+                          </template>
+                          {{ classroom }}
+                        </el-descriptions-item>
+                      <el-descriptions-item>
                             <template #label>
                                 <div>
                                     <el-icon>
