@@ -107,6 +107,9 @@
               <el-form-item label="邮箱地址" prop="email">
                 <el-input v-model="form.email" style="width: 80%"></el-input>
               </el-form-item>
+              <el-form-item label="班级" prop="classroom">
+                <el-input v-model="form.classroom" style="width: 80%"></el-input>
+              </el-form-item>
             </el-form>
             <template #footer>
               <span class="dialog-footer">
