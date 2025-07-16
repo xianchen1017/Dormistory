@@ -23,6 +23,7 @@ public class SecurityConfig {
                         "/api/stu/register",
                         "/api/stu/stuNum",
                         "/api/stu/update",
+                        "/api/stu/exist/**",
                         "/api/admin/login",
                         "/api/admin/update",
                         "/api/dormManager/login",

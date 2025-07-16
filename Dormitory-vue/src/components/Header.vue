@@ -1,6 +1,6 @@
 <template>
   <div style="line-height: 50px;display: flex">
-    <div style="width: 200px;margin-left: 10px; font-weight: bold; color: dodgerblue">某高职院校宿舍管理系统</div>
+    <div style="width: 200px;margin-left: 10px; font-weight: bold; color: dodgerblue">武汉理工大学宿舍管理系统</div>
     <Clock style="font-size: 20px;position: absolute;left: 50%;overflow: hidden;"/>
     <div style="flex: 1"></div>
     <div class="right-info">

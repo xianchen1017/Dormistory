@@ -35,5 +35,6 @@ public class DormRoom {
     private String thirdBed;
     @TableField("fourth_bed")
     private String fourthBed;
-
+    @TableField("evaluation")
+    private String evaluation; // 新增评价字段
 }
