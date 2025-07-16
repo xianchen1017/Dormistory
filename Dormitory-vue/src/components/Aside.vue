@@ -33,6 +33,7 @@
       </template>
       <el-menu-item v-if="this.judgeIdentity()!==0" index="/buildingInfo">楼宇信息</el-menu-item>
       <el-menu-item v-if="this.judgeIdentity()!==0" index="/roomInfo">房间信息</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()!==0" index="/comeBackLateInfo">晚归记录</el-menu-item>
     </el-sub-menu>
     <el-sub-menu v-if="this.judgeIdentity()!==0" index="4">
       <template #title>

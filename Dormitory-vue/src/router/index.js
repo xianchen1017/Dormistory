@@ -12,6 +12,7 @@ export const constantRoutes = [
             {path: '/stuInfo', name: 'StuInfo', component: () => import("@/views/StuInfo")},
             {path: '/dormManagerInfo', name: 'DormManagerInfo', component: () => import("@/views/DormManagerInfo")},
             {path: '/buildingInfo', name: 'BuildingInfo', component: () => import("@/views/BuildingInfo")},
+            {path: '/comeBackLateInfo', name: 'ComeBackLateInfo', component: () => import("@/views/ComeBackLateInfo")},
             {path: '/roomInfo', name: 'RoomInfo', component: () => import("@/views/RoomInfo")},
             {path: '/noticeInfo', name: 'NoticeInfo', component: () => import("@/views/NoticeInfo")},
             {path: '/adjustRoomInfo', name: 'AdjustRoomInfo', component: () => import("@/views/AdjustRoomInfo")},
