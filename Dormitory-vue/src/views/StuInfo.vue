@@ -27,6 +27,8 @@
           <el-table-column label="#" type="index"/>
           <el-table-column label="学号" prop="username" sortable/>
           <el-table-column label="姓名" prop="name"/>
+          <el-table-column label="班级" prop="classroom"/>
+
           <el-table-column
               :filter-method="filterTag"
               :filters="[
@@ -104,6 +106,9 @@
               </el-form-item>
               <el-form-item label="邮箱地址" prop="email">
                 <el-input v-model="form.email" style="width: 80%"></el-input>
+              </el-form-item>
+              <el-form-item label="班级" prop="classroom">
+                <el-input v-model="form.classroom" style="width: 80%"></el-input>
               </el-form-item>
             </el-form>
             <template #footer>

@@ -1,9 +1,11 @@
 import request from "@/utils/request";
+import {Edit} from "@element-plus/icons-vue";
 
 const {ElMessage} = require("element-plus");
 
 export default {
     name: "StuInfo",
+    components: {Edit},
     data() {
         // 手机号验证
         const checkPhone = (rule, value, callback) => {
@@ -55,6 +57,7 @@ export default {
             form: {
                 username: "",
                 name: "",
+                classroom: "",
                 age: "",
                 gender: "",
                 phoneNum: "",

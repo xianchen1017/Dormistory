@@ -1,8 +1,15 @@
 import request from "@/utils/request";
+import {
+    Iphone,
+    Location,
+    OfficeBuilding,
+    Tickets, User
+} from "@element-plus/icons-vue";
 
 const {ElMessage} = require("element-plus");
 export default {
     name: "selfInfo",
+  components: {User, Iphone, OfficeBuilding, Tickets, Location},
     data() {
         // 手机号验证
         const checkPhone = (rule, value, callback) => {
@@ -52,6 +59,7 @@ export default {
             email: "",
             targetURL: "",
             avatar: "",
+            classroom: "",
             form: {
                 username: "",
                 name: "",
@@ -59,6 +67,7 @@ export default {
                 age: "",
                 phoneNum: "",
                 email: "",
+                classroom: "",
             },
             rules: {
                 username: [
@@ -127,6 +136,7 @@ export default {
             this.phoneNum = this.form.phoneNum;
             this.email = this.form.email;
             this.avatar = this.form.avatar;
+            this.classroom=this.form.classroom;
         },
         //查询数据，更新session
         find() {

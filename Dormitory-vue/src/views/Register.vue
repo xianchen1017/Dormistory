@@ -100,6 +100,15 @@
           />
         </el-form-item>
 
+        <!--新增班级字段-->
+        <el-form-item label="班级" prop="classroom">
+          <el-input
+              v-model="registerForm.classroom"
+              placeholder="请输入班级"
+              prefix-icon="ClassRoom"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button
               type="primary"
