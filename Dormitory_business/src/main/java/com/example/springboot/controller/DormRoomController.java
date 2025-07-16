@@ -191,4 +191,26 @@ public class DormRoomController {
             return Result.error("-1", "不存在该房间");
         }
     }
+
+
+    @PostMapping("/addEvaluation/{dormRoomId}")
+    public Result<?> addRoomEvaluation(@PathVariable Integer dormRoomId,
+                                       @RequestParam String evaluation) {
+        int result = dormRoomService.addRoomEvaluation(dormRoomId, evaluation);
+        if (result == 1) {
+            return Result.success();
+        } else {
+            return Result.error("-1", "添加评价失败");
+        }
+    }
+
+    @GetMapping("/getEvaluation/{dormRoomId}")
+    public Result<?> getRoomEvaluation(@PathVariable Integer dormRoomId) {
+        DormRoom dormRoom = dormRoomService.getRoomEvaluation(dormRoomId);
+        if (dormRoom != null) {
+            return Result.success(dormRoom.getEvaluation());
+        } else {
+            return Result.error("-1", "获取评价失败");
+        }
+    }
 }

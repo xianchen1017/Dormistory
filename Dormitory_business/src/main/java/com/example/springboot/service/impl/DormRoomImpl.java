@@ -289,5 +289,18 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
             System.out.println("释放学生 " + username + " 床位失败，更新结果: " + result);
         }
     }
+    @Override
+    public int addRoomEvaluation(Integer dormRoomId, String evaluation) {
+        UpdateWrapper<DormRoom> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("dormroom_id", dormRoomId);
+        updateWrapper.set("evaluation", evaluation);
+        return dormRoomMapper.update(null, updateWrapper);
+    }
 
+    @Override
+    public DormRoom getRoomEvaluation(Integer dormRoomId) {
+        QueryWrapper<DormRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dormroom_id", dormRoomId);
+        return dormRoomMapper.selectOne(queryWrapper);
+    }
 }
