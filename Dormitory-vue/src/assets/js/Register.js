@@ -17,7 +17,8 @@ export function useRegister() {
         phone: '',
         age: '',
         gender: '',
-        email: ''
+        email: '',
+        classroom:''
     })
 
     // 表单验证规则
@@ -71,6 +72,10 @@ export function useRegister() {
         email: [
             { required: true, message: '请输入邮箱', trigger: 'blur' },
             { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+        ],
+        classroom:[
+            { required: true, message: '请输入班级', trigger: 'blur' },
+            { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
         ]
     })
 
@@ -93,7 +98,8 @@ export function useRegister() {
                 phoneNum: registerForm.phone, // 注意与后端实体类字段名一致
                 age: registerForm.age,       //
                 gender: registerForm.gender, //
-                email: registerForm.email    //
+                email: registerForm.email,    //
+                classroom:registerForm.classroom
             }
 
             console.log('提交的注册数据:', requestData) // 调试用
