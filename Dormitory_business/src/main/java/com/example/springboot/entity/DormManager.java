@@ -35,4 +35,6 @@ public class DormManager {
     private String email;
     @TableField("avatar")
     private String avatar;
+    @TableField("classroom")
+    private String classroom;
 }
