@@ -1,24 +1,24 @@
 <template>
-  <div>
-      <h2>入住报表</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 32px;">
-        <div>
-          <h3>本月各房型入住人数</h3>
-          <div ref="pieChart" style="width: 400px; height: 300px;"></div>
-        </div>
-        <div>
-          <h3>本月与去年同期入住人数对比</h3>
-          <div ref="barChart" style="width: 400px; height: 300px;"></div>
-        </div>
-        <div>
-          <h3>本季度每月入住人数</h3>
-          <div ref="quarterChart" style="width: 400px; height: 300px;"></div>
-        </div>
-        <div>
-          <h3>全年每月入住人数</h3>
-          <div ref="yearChart" style="width: 400px; height: 300px;"></div>
-        </div>
+  <div class="report-container">
+    <h2>入住报表</h2>
+    <div class="report-grid">
+      <div class="report-card">
+        <h3>本月各房型入住人数</h3>
+        <div ref="pieChart" class="chart"></div>
       </div>
+      <div class="report-card">
+        <h3>本月与去年同期入住人数对比</h3>
+        <div ref="barChart" class="chart"></div>
+      </div>
+      <div class="report-card">
+        <h3>本季度每月入住人数</h3>
+        <div ref="quarterChart" class="chart"></div>
+      </div>
+      <div class="report-card">
+        <h3>全年每月入住人数</h3>
+        <div ref="yearChart" class="chart"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -189,3 +189,50 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.report-container {
+  padding: 32px 16px;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 固定两列 */
+  gap: 32px;
+  margin-top: 24px;
+}
+.report-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 24px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 380px;
+  transition: box-shadow 0.2s;
+}
+.report-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.report-card h3 {
+  margin-bottom: 16px;
+  font-weight: 500;
+  color: #333;
+}
+.chart {
+  width: 400px;
+  height: 300px;
+}
+@media (max-width: 900px) {
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart {
+    width: 100%;
+    min-width: 260px;
+    height: 220px;
+  }
+}
+</style>
