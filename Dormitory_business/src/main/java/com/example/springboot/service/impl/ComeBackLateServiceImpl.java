@@ -3,7 +3,7 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.entity.ComeBackLate;
+import com.example.springboot.pojo.ComeBackLate;
 import com.example.springboot.mapper.ComeBackLateMapper;
 import com.example.springboot.service.ComeBackLateService;
 import org.springframework.stereotype.Service;

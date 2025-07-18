@@ -1,7 +1,7 @@
 package com.example.springboot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.springboot.entity.DormRoom;
+import com.example.springboot.pojo.DormRoom;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

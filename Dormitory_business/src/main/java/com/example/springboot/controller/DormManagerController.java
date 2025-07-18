@@ -2,8 +2,8 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
-import com.example.springboot.entity.DormManager;
-import com.example.springboot.entity.User;
+import com.example.springboot.pojo.DormManager;
+import com.example.springboot.pojo.User;
 import com.example.springboot.service.DormManagerService;
 import org.springframework.web.bind.annotation.*;
 

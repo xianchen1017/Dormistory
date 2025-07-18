@@ -82,6 +82,12 @@
       </el-icon>
       <span>报修申请</span>
     </el-menu-item>
+    <el-menu-item v-if="this.judgeIdentity() === 2" index="/report">
+      <el-icon>
+        <pie-chart/>
+      </el-icon>
+      <span>入住报表</span>
+    </el-menu-item>
     <el-menu-item index="/selfInfo">
       <el-icon>
         <setting/>

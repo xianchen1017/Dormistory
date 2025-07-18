@@ -80,7 +80,8 @@ public class SecurityConfig {
                         "/api/come-back-late/delete/**",
                         "/api/come-back-late/update",
                         "/api/come-back-late/find",
-                        "/api/come-back-late/find-by-student"
+                        "/api/come-back-late/find-by-student",
+                        "/api/report/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

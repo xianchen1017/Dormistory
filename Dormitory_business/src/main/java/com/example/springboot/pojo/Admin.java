@@ -1,4 +1,4 @@
-package com.example.springboot.entity;
+package com.example.springboot.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,29 +8,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 学生
+ * 系统管理员
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-// 告诉Mybatis-plus，这个类与数据库中的哪张表有关
-@TableName(value = "student")
-public class Student {
-    // 告诉Mybatis-plus, 属性对应表中的字段
+
+@TableName(value = "admin")
+public class Admin {
+
     @TableId(value = "username")
     private String username;
-    @TableField("password")
+    @TableField(value = "password")
     private String password;
-    @TableField("name")
+    @TableField(value = "name")
     private String name;
-    @TableField("age")
-    private int age;
-    @TableField("gender")
+    @TableField(value = "gender")
     private String gender;
-    @TableField("phone_num")
+    @TableField(value = "age")
+    private int age;
+    @TableField(value = "phone_num")
     private String phoneNum;
-    @TableField("email")
+    @TableField(value = "email")
     private String email;
     @TableField("avatar")
     private String avatar;

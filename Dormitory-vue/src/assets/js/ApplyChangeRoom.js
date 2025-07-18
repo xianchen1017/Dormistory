@@ -1,235 +1,157 @@
-import request from "@/utils/request";
+import * as echarts from 'echarts'
+import request from "@/utils/request"
 
-const {ElMessage} = require("element-plus");
 export default {
-    name: "AdjustRoomInfo",
-    data() {
-        const checkRoomState = (rule, value, callback) => {
-            this.dormRoomId = value
-            if (typeof value === "number") {
-                request.get("/room/checkRoomState/" + value).then((res) => {
-                    request.get("/room/checkRoomExist/" + value).then((result) => {
-                        if (result.code === "-1") {
-                            callback(new Error(result.msg));
-                        }
-                        if (res.code === "-1") {
-                            callback(new Error(res.msg));
-                        }
-                        callback();
-                    })
-                });
-            } else {
-                callback(new Error("请输入正确的数据"));
-            }
-        };
-        const checkBedState = (rule, value, callback) => {
-            request.get("/room/checkBedState/" + this.dormRoomId + '/' + value).then((res) => {
-                if (res.code === "0") {
-                    callback();
-                } else {
-                    callback(new Error(res.msg));
-                }
-            });
-        };
-        return {
-            loading: true,
-            dialogVisible: false,
-            detailDialog: false,
-            search: "",
-            currentPage: 1,
-            pageSize: 10,
-            total: 0,
-            tableData: [],
-            form: {},
-            dormRoomId: 0,
-            orderState: false,
-            judgeOption: false,
-            rules: {
-                username: [
-                    {required: true, message: "请输入学号", trigger: "blur"},
-                    {pattern: /^[a-zA-Z0-9]{4,9}$/, message: "必须由 2 到 5 个字母或数字组成", trigger: "blur",},
-                ],
-                name: [
-                    {required: true, message: "请输入姓名", trigger: "blur"},
-                    {pattern: /^(?:[\u4E00-\u9FA5·]{2,10})$/, message: "必须由 2 到 10 个汉字组成", trigger: "blur",},
-                ],
-                currentRoomId: [
-                    {required: true, message: "请输入当前房间号", trigger: "blur"},
-                ],
-                currentBedId: [
-                    {required: true, message: "请输入当前床位号", trigger: "blur"},
-                ],
-                towardsRoomId: [
-                    {validator: checkRoomState, trigger: "blur"},
-                ],
-                towardsBedId: [
-                    {validator: checkBedState, trigger: "blur"},
-                ],
-            },
-        }
+  name: "Report",
+  data() {
+    return {
+      pieData: [],
+      barData: {},
+      quarterData: [],
+      yearData: [],
+      debug: {
+        monthly: '',
+        monthlyCompare: '',
+        quarterly: '',
+        yearly: '',
+        error: ''
+      }
+    }
+  },
+  computed: {
+    isAdmin() {
+      const user = JSON.parse(sessionStorage.getItem("user") || '{}');
+      return user.role === 'admin';
+    }
+  },
+  mounted() {
+    this.loadMonthly();
+    this.loadMonthlyCompare();
+    this.loadQuarterly();
+    this.loadYearly();
+  },
+  methods: {
+    loadMonthly() {
+      request.get("/report/monthly").then(res => {
+        this.debug.monthly = JSON.stringify(res.data, null, 2);
+        this.pieData = res.data.data;
+        this.drawPie();
+      }).catch(err => {
+        this.debug.error = 'monthly: ' + err;
+        console.log('loadMonthly error', err);
+      });
     },
-    created() {
-        this.load();
-        this.loading = true;
-        setTimeout(() => {
-            //设置延迟执行
-            this.loading = false;
-        }, 1000);
+    loadMonthlyCompare() {
+      request.get("/report/monthly-compare").then(res => {
+        this.debug.monthlyCompare = JSON.stringify(res.data, null, 2);
+        this.barData = res.data;
+        this.drawBar();
+      }).catch(err => {
+        this.debug.error = 'monthly-compare: ' + err;
+      });
     },
-    methods: {
-        async load() {
-            request.get("/adjustRoom/find", {
-                params: {
-                    pageNum: this.currentPage,
-                    pageSize: this.pageSize,
-                    search: this.search,
-                },
-            }).then((res) => {
-                this.tableData = res.data.records;
-                this.total = res.data.total;
-                this.loading = false;
-            });
-        },
-        filterTag(value, row) {
-            return row.gender === value;
-        },
-        add() {
-            this.dialogVisible = true;
-            this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                this.form.username = JSON.parse(sessionStorage.getItem("user")).username;
-                this.form.name = JSON.parse(sessionStorage.getItem("user")).name;
-                request.get("/room/getMyRoom/" + this.form.username).then((res) => {
-                    this.form.currentRoomId = res.data.dormRoomId
-                    this.form.currentBedId = this.calBedNum(this.form.username, res.data)
-                });
-                this.judgeOption = true;
-            });
-        },
-        calBedNum(username, data) {
-            if (data.firstBed === username) {
-                return 1;
-            } else if (data.secondBed === username) {
-                return 2;
-            } else if (data.thirdBed === username) {
-                return 3;
-            } else if (data.fourthBed === username) {
-                return 4;
-            }
-        },
-        judgeOrderState(state) {
-            if (state === '通过') {
-                this.orderState = true
-            } else if (state === '驳回') {
-                this.orderState = false
-            } else if (state === '未处理') {
-                this.orderState = false
-            }
-        },
-        save() {
-            this.$refs.form.validate((valid) => {
-                if (valid) {
-                    if (this.judgeOption === false) {
-                        //修改
-                        this.judgeOrderState(this.form.state)
-                        // 确保orderState是字符串类型
-                        const stateParam = this.orderState ? "true" : "false";
-                        request.put("/adjustRoom/update/" + stateParam, this.form).then((res) => {
-                            if (res.code === "0") {
-                                ElMessage({
-                                    message: "修改成功",
-                                    type: "success",
-                                });
-                                this.search = "";
-                                this.load();
-                                this.dialogVisible = false;
-                            } else if (res.msg === "重复操作") {
-                                ElMessage({
-                                    message: res.msg,
-                                    type: "error",
-                                });
-                                this.search = "";
-                                this.load();
-                                this.dialogVisible = false;
-                            } else {
-                                ElMessage({
-                                    message: res.msg,
-                                    type: "error",
-                                });
-                            }
-                        });
-                    } else if (this.judgeOption === true) {
-                        //添加
-                        // 确保数据类型正确
-                        const formData = {
-                            ...this.form,
-                            currentRoomId: parseInt(this.form.currentRoomId),
-                            currentBedId: parseInt(this.form.currentBedId),
-                            towardsRoomId: parseInt(this.form.towardsRoomId),
-                            towardsBedId: parseInt(this.form.towardsBedId),
-                            applyTime: new Date().toISOString().slice(0, 19).replace('T', ' '), // 添加申请时间
-                            state: '未处理' // 设置初始状态
-                        };
-                        
-                        console.log("提交的调宿申请数据:", formData);
-                        request.post("/adjustRoom/add", formData).then((res) => {
-                            if (res.code === "0") {
-                                ElMessage({
-                                    message: "添加成功",
-                                    type: "success",
-                                });
-                                this.search = "";
-                                this.load();
-                                this.dialogVisible = false;
-                            } else {
-                                ElMessage({
-                                    message: res.msg,
-                                    type: "error",
-                                });
-                            }
-                        }).catch((error) => {
-                            console.error("调宿申请添加失败:", error);
-                            ElMessage({
-                                message: "添加失败，请检查数据格式",
-                                type: "error",
-                            });
-                        });
-                    }
-                }
-            });
-        },
-        cancel() {
-            this.$refs.form.resetFields();
-            this.dialogVisible = false;
-            this.detailDialog = false;
-        },
-        showDetail(row) {
-            // 查看详情
-            this.detailDialog = true;
-            this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                this.form = JSON.parse(JSON.stringify(row));
-            });
-        },
-        handleEdit(row) {
-            //修改
-            // 生拷贝
-            this.dialogVisible = true;
-            this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                this.form = JSON.parse(JSON.stringify(row));
-                this.judgeOption = false;
-            });
-        },
-        handleSizeChange(pageSize) {
-            //改变每页个数
-            this.pageSize = pageSize;
-            this.load();
-        },
-        handleCurrentChange(pageNum) {
-            //改变页码
-            this.currentPage = pageNum;
-            this.load();
-        },
+    loadQuarterly() {
+      request.get("/report/quarterly").then(res => {
+        this.debug.quarterly = JSON.stringify(res, null, 2);
+        this.quarterData = Array.isArray(res.data) ? res.data : [];
+        this.drawQuarter();
+      }).catch(err => {
+        this.debug.error = 'quarterly: ' + err;
+        console.log('loadQuarterly error', err);
+      });
     },
+    loadYearly() {
+      request.get("/report/yearly").then(res => {
+        this.debug.yearly = JSON.stringify(res, null, 2);
+        this.yearData = Array.isArray(res.data) ? res.data : [];
+        this.drawYear();
+      }).catch(err => {
+        this.debug.error = 'yearly: ' + err;
+      });
+    },
+    drawPie() {
+      try {
+        let chart = echarts.init(this.$refs.pieChart);
+        chart.setOption({
+          title: { text: '本月各房型入住人数', left: 'center' },
+          tooltip: { trigger: 'item' },
+          legend: { bottom: 10, left: 'center' },
+          series: [{
+            name: '人数',
+            type: 'pie',
+            radius: '50%',
+            data: this.pieData,
+            emphasis: {
+              itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' }
+            }
+          }]
+        });
+      } catch (e) {
+        this.debug.error = 'drawPie: ' + e;
+      }
+    },
+    drawBar() {
+      try {
+        let chart = echarts.init(this.$refs.barChart);
+        chart.setOption({
+          title: { text: '本月与去年同期入住人数对比', left: 'center' },
+          tooltip: { trigger: 'axis' },
+          xAxis: { type: 'category', data: ['本月', '去年同期'] },
+          yAxis: { type: 'value' },
+          series: [{
+            data: [this.barData.thisMonth, this.barData.lastYearMonth],
+            type: 'bar'
+          }]
+        });
+      } catch (e) {
+        this.debug.error = 'drawBar: ' + e;
+      }
+    },
+    drawQuarter() {
+      try {
+        const quarterMonths = [7, 8, 9]; // 假设当前季度
+        const dataMap = {};
+        this.quarterData.forEach(i => { dataMap[i.month] = i.total; });
+        const seriesData = quarterMonths.map(m => dataMap[m] || 0);
+        let chart = echarts.init(this.$refs.quarterChart);
+        chart.setOption({
+          title: { text: '本季度每月入住人数', left: 'center' },
+          tooltip: { trigger: 'axis' },
+          xAxis: { type: 'category', data: quarterMonths },
+          yAxis: { type: 'value' },
+          series: [{
+            data: seriesData,
+            type: 'line'
+          }]
+        });
+      } catch (e) {
+        this.debug.error = 'drawQuarter: ' + e;
+        console.log('drawQuarter error', e);
+      }
+    },
+    drawYear() {
+      try {
+        const rawYearData = JSON.parse(JSON.stringify(this.yearData));
+        const months = Array.from({length: 12}, (_, i) => i + 1);
+        const dataMap = {};
+        // 关键：month转成数字，保证key类型一致
+        rawYearData.forEach(i => { dataMap[Number(i.month)] = i.total; });
+        const seriesData = months.map(m => dataMap[m] || 0);
+        let chart = echarts.init(this.$refs.yearChart);
+        chart.setOption({
+          title: { text: '全年每月入住人数', left: 'center' },
+          tooltip: { trigger: 'axis' },
+          xAxis: { type: 'category', data: months },
+          yAxis: { type: 'value', max: 12 },
+          series: [{
+            data: seriesData,
+            type: 'bar'
+          }]
+        });
+      } catch (e) {
+        this.debug.error = 'drawYear: ' + e;
+        console.log('drawYear error', e);
+      }
+    }
+  }
 }

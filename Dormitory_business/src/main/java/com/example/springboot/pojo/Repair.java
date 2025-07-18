@@ -1,4 +1,4 @@
-package com.example.springboot.entity;
+package com.example.springboot.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

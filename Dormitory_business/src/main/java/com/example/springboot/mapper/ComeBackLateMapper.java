@@ -1,7 +1,7 @@
 package com.example.springboot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.springboot.entity.ComeBackLate;
+import com.example.springboot.pojo.ComeBackLate;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

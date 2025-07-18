@@ -1,6 +1,6 @@
 package com.example.springboot.common;
 
-import com.example.springboot.entity.DormRoom;
+import com.example.springboot.pojo.DormRoom;
 
 public class CalPeopleNum {
 

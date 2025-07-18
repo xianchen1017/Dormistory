@@ -1,4 +1,4 @@
-package com.example.springboot.entity;
+package com.example.springboot.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,24 +9,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 公告
+ * 访客
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
-@TableName(value = "notice")
-public class Notice {
+@TableName(value = "visitor")
+public class Visitor {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    @TableField("title")
-    private String title;
+    @TableField("name")
+    private String visitorName;
+    @TableField("gender")
+    private String gender;
+    @TableField("phone_num")
+    private String phoneNum;
+    @TableField("origin_city")
+    private String originCity;
+    @TableField("visit_time")
+    private String visitTime;
     @TableField("content")
     private String content;
-    @TableField("author")
-    private String author;
-    @TableField("release_time")
-    private String releaseTime;
+
 }

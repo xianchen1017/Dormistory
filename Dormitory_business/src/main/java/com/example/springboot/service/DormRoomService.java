@@ -2,8 +2,8 @@ package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.springboot.entity.AdjustRoom;
-import com.example.springboot.entity.DormRoom;
+import com.example.springboot.pojo.AdjustRoom;
+import com.example.springboot.pojo.DormRoom;
 
 
 public interface DormRoomService extends IService<DormRoom> {

@@ -3,7 +3,7 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.entity.AdjustRoom;
+import com.example.springboot.pojo.AdjustRoom;
 import com.example.springboot.mapper.AdjustRoomMapper;
 import com.example.springboot.service.AdjustRoomService;
 import org.springframework.stereotype.Service;
