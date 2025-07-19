@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -22,8 +23,10 @@ public class DormBuild {
     private Integer id;
     @TableField("dormbuild_id")
     private int dormBuildId;
+    @Getter
     @TableField("dormbuild_name")
     private String dormBuildName;
     @TableField("dormbuild_detail")
     private String dormBuildDetail;
+
 }
