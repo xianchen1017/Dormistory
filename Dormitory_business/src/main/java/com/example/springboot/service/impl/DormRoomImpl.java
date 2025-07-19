@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.common.JudgeBedName;
-import com.example.springboot.entity.AdjustRoom;
-import com.example.springboot.entity.DormRoom;
+import com.example.springboot.pojo.AdjustRoom;
+import com.example.springboot.pojo.DormRoom;
 import com.example.springboot.mapper.DormRoomMapper;
 import com.example.springboot.service.DormRoomService;
 import org.springframework.stereotype.Service;
@@ -289,5 +289,18 @@ public class DormRoomImpl extends ServiceImpl<DormRoomMapper, DormRoom> implemen
             System.out.println("释放学生 " + username + " 床位失败，更新结果: " + result);
         }
     }
+    @Override
+    public int addRoomEvaluation(Integer dormRoomId, String evaluation) {
+        UpdateWrapper<DormRoom> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("dormroom_id", dormRoomId);
+        updateWrapper.set("evaluation", evaluation);
+        return dormRoomMapper.update(null, updateWrapper);
+    }
 
+    @Override
+    public DormRoom getRoomEvaluation(Integer dormRoomId) {
+        QueryWrapper<DormRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dormroom_id", dormRoomId);
+        return dormRoomMapper.selectOne(queryWrapper);
+    }
 }

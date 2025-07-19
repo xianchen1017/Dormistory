@@ -1,4 +1,4 @@
-package com.example.springboot.entity;
+package com.example.springboot.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -35,5 +35,6 @@ public class DormRoom {
     private String thirdBed;
     @TableField("fourth_bed")
     private String fourthBed;
-
+    @TableField("evaluation")
+    private String evaluation; // 新增评价字段
 }

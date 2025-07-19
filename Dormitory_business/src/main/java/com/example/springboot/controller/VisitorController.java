@@ -2,7 +2,7 @@ package com.example.springboot.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
-import com.example.springboot.entity.Visitor;
+import com.example.springboot.pojo.Visitor;
 import com.example.springboot.service.VisitorService;
 import org.springframework.web.bind.annotation.*;
 

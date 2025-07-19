@@ -2,8 +2,8 @@ package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.springboot.entity.AdjustRoom;
-import com.example.springboot.entity.DormRoom;
+import com.example.springboot.pojo.AdjustRoom;
+import com.example.springboot.pojo.DormRoom;
 
 
 public interface DormRoomService extends IService<DormRoom> {
@@ -48,4 +48,10 @@ public interface DormRoomService extends IService<DormRoom> {
     
     // 根据学生用户名释放床位
     void releaseBedByStudent(String username);
+
+    // 添加房间评价
+    int addRoomEvaluation(Integer dormRoomId, String evaluation);
+
+    // 获取房间评价
+    DormRoom getRoomEvaluation(Integer dormRoomId);
 }

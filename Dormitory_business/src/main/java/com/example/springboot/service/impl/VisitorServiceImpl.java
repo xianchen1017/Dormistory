@@ -3,7 +3,7 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.entity.Visitor;
+import com.example.springboot.pojo.Visitor;
 import com.example.springboot.mapper.VisitorMapper;
 import com.example.springboot.service.VisitorService;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.springboot.entity.Student;
+import com.example.springboot.pojo.Student;
 
 
 public interface StudentService extends IService<Student> {

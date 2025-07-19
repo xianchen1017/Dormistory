@@ -14,28 +14,31 @@
       </el-icon>
       <span>首页</span>
     </el-menu-item>
-    <el-sub-menu v-if="this.judgeIdentity()!==0" index="2">
+    <!-- 用户管理：教师和管理员可见，教师只显示学生信息 -->
+    <el-sub-menu v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="2">
       <template #title>
         <el-icon>
           <user/>
         </el-icon>
         <span>用户管理</span>
       </template>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/stuInfo">学生信息</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="/stuInfo">学生信息</el-menu-item>
       <el-menu-item v-if="this.judgeIdentity()===2" index="/dormManagerInfo">宿管信息</el-menu-item>
     </el-sub-menu>
-    <el-sub-menu v-if="this.judgeIdentity()!==0" index="3">
+    <!-- 宿舍管理：教师和管理员可见 -->
+    <el-sub-menu v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="3">
       <template #title>
         <el-icon>
           <coin/>
         </el-icon>
         <span>宿舍管理</span>
       </template>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/buildingInfo">楼宇信息</el-menu-item>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/roomInfo">房间信息</el-menu-item>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/comeBackLateInfo">晚归记录</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="/buildingInfo">楼宇信息</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="/roomInfo">房间信息</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="/comeBackLateInfo">晚归记录</el-menu-item>
     </el-sub-menu>
-    <el-sub-menu v-if="this.judgeIdentity()!==0" index="4">
+    <!-- 信息管理：只有管理员可见 -->
+    <el-sub-menu v-if="this.judgeIdentity()===2" index="4">
       <template #title>
         <el-icon>
           <message/>
@@ -43,18 +46,20 @@
         <span>信息管理</span>
       </template>
       <el-menu-item v-if="this.judgeIdentity()===2" index="/noticeInfo">公告信息</el-menu-item>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/repairInfo">报修信息</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===2" index="/repairInfo">报修信息</el-menu-item>
     </el-sub-menu>
-    <el-sub-menu v-if="this.judgeIdentity()!==0" index="5">
+    <!-- 申请管理：教师和管理员可见 -->
+    <el-sub-menu v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="5">
       <template #title>
         <el-icon>
           <pie-chart/>
         </el-icon>
         <span>申请管理</span>
       </template>
-      <el-menu-item v-if="this.judgeIdentity()!==0" index="/adjustRoomInfo">调宿申请</el-menu-item>
+      <el-menu-item v-if="this.judgeIdentity()===1 || this.judgeIdentity()===2" index="/adjustRoomInfo">调宿申请</el-menu-item>
     </el-sub-menu>
-    <el-menu-item v-if="this.judgeIdentity()!==0" index="/visitorInfo">
+    <!-- 访客管理：只有管理员可见 -->
+    <el-menu-item v-if="this.judgeIdentity()===2" index="/visitorInfo">
       <svg class="icon" data-v-042ca774="" style="height: 18px; margin-right: 11px;"
            viewBox="0 0 1024 1024"
            xmlns="http://www.w3.org/2000/svg">
@@ -64,6 +69,7 @@
       </svg>
       <span>访客管理</span>
     </el-menu-item>
+    <!-- 学生专属菜单项 -->
     <el-menu-item v-if="this.judgeIdentity()===0" index="/myRoomInfo">
       <el-icon>
         <school/>
@@ -82,6 +88,14 @@
       </el-icon>
       <span>报修申请</span>
     </el-menu-item>
+    <!-- 管理员专属菜单项 -->
+    <el-menu-item v-if="this.judgeIdentity() === 2" index="/report">
+      <el-icon>
+        <pie-chart/>
+      </el-icon>
+      <span>入住报表</span>
+    </el-menu-item>
+    <!-- 个人信息所有人可见 -->
     <el-menu-item index="/selfInfo">
       <el-icon>
         <setting/>

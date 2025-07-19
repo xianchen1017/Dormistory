@@ -2,7 +2,7 @@ package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.springboot.entity.DormBuild;
+import com.example.springboot.pojo.DormBuild;
 
 import java.util.List;
 

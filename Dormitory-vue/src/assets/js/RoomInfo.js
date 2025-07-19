@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-const {ElMessage} = require("element-plus");
+const { ElMessage } = require("element-plus");
 
 export default {
     name: "BuildingInfo",
@@ -46,32 +46,48 @@ export default {
                 secondBed: "",
                 thirdBed: "",
                 fourthBed: "",
+                evaluation: "",
             },
             rules: {
                 dormRoomId: [
-                    {required: true, message: "请输入房间号", trigger: "blur"},
-                    {pattern: /^[0-9]{4}$/, message: "范围：1000-9999", trigger: "blur"},
+                    { required: true, message: "请输入房间号", trigger: "blur" },
+                    // { pattern: /^[0-9]{4}$/, message: "范围：1000 - 9999", trigger: "blur" },
                 ],
                 floorNum: [
-                    {required: true, message: "请输入楼层数", trigger: "blur"},
-                    {pattern: /^[1-3]$/, message: "范围：1-3", trigger: "blur"},
+                    { required: true, message: "请输入楼层数", trigger: "blur" },
+                    { pattern: /^[1-3]$/, message: "范围：1 - 3", trigger: "blur" },
                 ],
                 dormBuildId: [
-                    {required: true, message: "请输入楼宇号数", trigger: "blur"},
-                    {pattern: /^[1-4]$/, message: "范围：1-4", trigger: "blur"},
+                    { required: true, message: "请输入楼宇号数", trigger: "blur" },
+                    { pattern: /^[1-4]$/, message: "范围：1 - 4", trigger: "blur" },
                 ],
                 maxCapacity: [
-                    {required: true, message: "请输入房间可住人数", trigger: "blur"},
-                    {pattern: /^[0-4]$/, message: "范围：0-4", trigger: "blur"},
+                    { required: true, message: "请输入房间可住人数", trigger: "blur" },
+                    { pattern: /^[0-4]$/, message: "范围：0 - 4", trigger: "blur" },
                 ],
                 currentCapacity: [
-                    {required: true, message: "请输入当前已住人数", trigger: "blur"},
-                    {pattern: /^[0-4]$/, message: "范围：0-4", trigger: "blur"},
+                    { required: true, message: "请输入当前已住人数", trigger: "blur" },
+                    { pattern: /^[0-4]$/, message: "范围：0 - 4", trigger: "blur" },
                 ],
-                firstBed: [{validator: checkStuNum, trigger: "blur"}],
-                secondBed: [{validator: checkStuNum, trigger: "blur"}],
-                thirdBed: [{validator: checkStuNum, trigger: "blur"}],
-                fourthBed: [{validator: checkStuNum, trigger: "blur"}],
+                firstBed: [{ validator: checkStuNum, trigger: "blur" }],
+                secondBed: [{ validator: checkStuNum, trigger: "blur" }],
+                thirdBed: [{ validator: checkStuNum, trigger: "blur" }],
+                fourthBed: [{ validator: checkStuNum, trigger: "blur" }],
+                evaluation: [
+                    { required: true, message: "请选择评价等级", trigger: "blur" },
+                    {
+                        validator: (rule, value, callback) => {
+                            // 只允许选择指定的四个评价等级
+                            const validEvaluations = ["优秀", "良好", "合格", "不合格"];
+                            if (validEvaluations.includes(value)) {
+                                callback();
+                            } else {
+                                callback(new Error("评价等级必须是：优秀、良好、合格、不合格"));
+                            }
+                        },
+                        trigger: "blur",
+                    },
+                ],
             },
         };
     },
@@ -79,38 +95,57 @@ export default {
         this.load();
         this.loading = true;
         setTimeout(() => {
-            //设置延迟执行
+            // 设置延迟执行
             this.loading = false;
         }, 1000);
     },
     methods: {
+        // 新增：根据评价等级返回Element标签类型
+        getTagType(evaluation) {
+            switch (evaluation) {
+                case "优秀":
+                    return "success"; // 绿色
+                case "良好":
+                    return "warning"; // 黄色
+                case "合格":
+                    return "info"; // 蓝色
+                case "不合格":
+                    return "danger"; // 红色
+                default:
+                    return "info"; // 默认蓝色
+            }
+        },
         async load() {
-            request.get("/room/find", {
-                params: {
-                    pageNum: this.currentPage,
-                    pageSize: this.pageSize,
-                    search: this.search,
-                },
-            }).then((res) => {
-                this.tableData = res.data.records;
-                this.total = res.data.total;
-                this.loading = false;
-            });
+            request
+                .get("/room/find", {
+                    params: {
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize,
+                        search: this.search,
+                    },
+                })
+                .then((res) => {
+                    this.tableData = res.data.records;
+                    this.total = res.data.total;
+                    this.loading = false;
+                });
         },
         reset() {
-            this.search = ''
-            request.get("/room/find", {
-                params: {
-                    pageNum: 1,
-                    pageSize: this.pageSize,
-                    search: this.search,
-                },
-            }).then((res) => {
-                console.log(res);
-                this.tableData = res.data.records;
-                this.total = res.data.total;
-                this.loading = false;
-            });
+            this.search = "";
+            request
+                .get("/room/find", {
+                    params: {
+                        pageNum: 1,
+                        pageSize: this.pageSize,
+                        search: this.search,
+                    },
+                })
+                .then((res) => {
+                    console.log(res);
+                    this.tableData = res.data.records;
+                    this.total = res.data.total;
+                    this.loading = false;
+                });
         },
         filterTag(value, row) {
             return row.currentCapacity === value;
@@ -118,9 +153,11 @@ export default {
         add() {
             this.dialogVisible = true;
             this.$nextTick(() => {
-                this.$refs.form.resetFields();
+                if (this.$refs.form) {
+                    this.$refs.form.resetFields();
+                }
                 this.disabled = false;
-                this.form = {};
+                this.form = { evaluation: "" };
                 this.judge = false;
             });
         },
@@ -128,7 +165,7 @@ export default {
             this.$refs.form.validate(async (valid) => {
                 if (valid) {
                     if (this.judge === false) {
-                        //新增
+                        // 新增
                         request.post("/room/add", this.form).then((res) => {
                             if (res.code === "0") {
                                 ElMessage({
@@ -147,7 +184,7 @@ export default {
                             }
                         });
                     } else {
-                        //修改
+                        // 修改
                         request.put("/room/update", this.form).then((res) => {
                             if (res.code === "0") {
                                 ElMessage({
@@ -169,24 +206,28 @@ export default {
             });
         },
         cancel() {
-            this.$refs.form.resetFields();
+            if (this.$refs.form) {
+                this.$refs.form.resetFields();
+            }
             this.dialogVisible = false;
             this.bedDialog = false;
             this.stuInfoDialog = false;
         },
         handleEdit(row) {
-            //修改
+            // 修改
             this.judge = true;
             this.dialogVisible = true;
             this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                // 生拷贝
+                if (this.$refs.form) {
+                    this.$refs.form.resetFields();
+                }
+                // 深拷贝
                 this.form = JSON.parse(JSON.stringify(row));
                 this.disabled = true;
             });
         },
         handleDelete(dormRoomId) {
-            //删除
+            // 删除
             request.delete("/room/delete/" + dormRoomId).then((res) => {
                 if (res.code === "0") {
                     ElMessage({
@@ -222,34 +263,38 @@ export default {
             this.havePeopleNum = roomPeopleNum;
         },
         plusIcon(num, info) {
-            //添加图标
+            // 添加图标
             this.judge = false;
-            //显示对应床位input
+            // 显示对应床位input
             this.bedNum = num;
-            //获取当前房间人数
+            // 获取当前房间人数
             this.calCurrentNum(info);
             this.bedDialog = true;
             this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                // 生拷贝
+                if (this.$refs.form) {
+                    this.$refs.form.resetFields();
+                }
+                // 深拷贝
                 this.form = JSON.parse(JSON.stringify(info));
             });
         },
         editIcon(num, info) {
-            //修改图标
+            // 修改图标
             this.judge = true;
-            //显示对应床位input
+            // 显示对应床位input
             this.bedNum = num;
-            //修改床位所住的学生
+            // 修改床位所住的学生
             this.bedDialog = true;
             this.$nextTick(() => {
-                this.$refs.form.resetFields();
-                // 生拷贝
+                if (this.$refs.form) {
+                    this.$refs.form.resetFields();
+                }
+                // 深拷贝
                 this.form = JSON.parse(JSON.stringify(info));
             });
         },
         detailIcon(num, info) {
-            //查看床位所住的学生
+            // 查看床位所住的学生
             let stu = "";
             // 删除
             if (num === 1) {
@@ -265,8 +310,10 @@ export default {
                 if (res.code === "0") {
                     this.stuInfoDialog = true;
                     this.$nextTick(() => {
-                        this.$refs.form.resetFields();
-                        // 生拷贝
+                        if (this.$refs.form) {
+                            this.$refs.form.resetFields();
+                        }
+                        // 深拷贝
                         this.form = JSON.parse(JSON.stringify(res.data));
                     });
                 }
@@ -298,7 +345,7 @@ export default {
             });
         },
         editStuBed() {
-            //修改
+            // 修改
             this.$refs.form.validate((valid) => {
                 if (valid) {
                     request.put("/room/update", this.form).then((res) => {
@@ -333,40 +380,42 @@ export default {
             } else if (bedNum === 4) {
                 bedName = "fourth_bed";
             }
-            //更新当前房间人数
+            // 更新当前房间人数
             this.calCurrentNum(info);
-            request.delete(
-                "/room/delete/" +
-                bedName +
-                "/" +
-                info.dormRoomId +
-                "/" +
-                this.havePeopleNum
-            ).then((res) => {
-                if (res.code === "0") {
-                    ElMessage({
-                        message: "删除成功",
-                        type: "success",
-                    });
-                    this.search = "";
-                    this.loading = true;
-                    this.load();
-                    this.bedDialog = false;
-                } else {
-                    ElMessage({
-                        message: res.msg,
-                        type: "error",
-                    });
-                }
-            });
+            request
+                .delete(
+                    "/room/delete/" +
+                    bedName +
+                    "/" +
+                    info.dormRoomId +
+                    "/" +
+                    this.havePeopleNum
+                )
+                .then((res) => {
+                    if (res.code === "0") {
+                        ElMessage({
+                            message: "删除成功",
+                            type: "success",
+                        });
+                        this.search = "";
+                        this.loading = true;
+                        this.load();
+                        this.bedDialog = false;
+                    } else {
+                        ElMessage({
+                            message: res.msg,
+                            type: "error",
+                        });
+                    }
+                });
         },
         handleSizeChange(pageSize) {
-            //改变每页个数
+            // 改变每页个数
             this.pageSize = pageSize;
             this.load();
         },
         handleCurrentChange(pageNum) {
-            //改变页码
+            // 改变页码
             this.currentPage = pageNum;
             this.load();
         },

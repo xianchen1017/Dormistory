@@ -46,7 +46,7 @@
           <el-table-column label="操作" width="200px">
             <template #default="scope">
               <el-button icon="Edit" type="primary" @click="handleEdit(scope.row)"></el-button>
-              <el-button v-if="judgeIdentity()===1" icon="House" type="success" @click="assignRoom(scope.row)">分配房间</el-button>
+              <el-button v-if="judgeIdentity()===1" icon="House" type="success" @click="assignRoom(scope.row)"></el-button>
               <el-popconfirm title="确认删除？" @confirm="handleDelete(scope.row.username)">
                 <template #reference>
                   <el-button icon="Delete" type="danger"></el-button>
@@ -118,7 +118,7 @@
               </span>
             </template>
           </el-dialog>
-          
+
           <!-- 分配房间弹窗 -->
           <el-dialog v-model="assignRoomDialog" title="分配房间" width="40%" @close="cancelAssignRoom">
             <el-form ref="assignRoomForm" :model="assignRoomForm" :rules="assignRoomRules" label-width="120px">
@@ -138,20 +138,20 @@
               </el-form-item>
               <el-form-item label="房间号" prop="dormRoomId">
                 <el-select v-model="assignRoomForm.dormRoomId" placeholder="请选择房间" style="width: 80%" @change="loadBeds">
-                  <el-option 
-                    v-for="room in availableRooms" 
-                    :key="room.dormRoomId" 
-                    :label="`${room.dormRoomId} (${room.currentCapacity}/${room.maxCapacity})`" 
+                  <el-option
+                    v-for="room in availableRooms"
+                    :key="room.dormRoomId"
+                    :label="`${room.dormRoomId} (${room.currentCapacity}/${room.maxCapacity})`"
                     :value="room.dormRoomId">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="床位号" prop="bedId">
                 <el-select v-model="assignRoomForm.bedId" placeholder="请选择床位" style="width: 80%">
-                  <el-option 
-                    v-for="bed in availableBeds" 
-                    :key="bed.id" 
-                    :label="`${bed.name}号床`" 
+                  <el-option
+                    v-for="bed in availableBeds"
+                    :key="bed.id"
+                    :label="`${bed.name}号床`"
                     :value="bed.id">
                   </el-option>
                 </el-select>

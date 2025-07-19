@@ -22,6 +22,7 @@ public class SecurityConfig {
                         "/api/stu/register",
                         "/api/stu/stuNum",
                         "/api/stu/update",
+                        "/api/stu/exist/**",
                         "/api/admin/login",
                         "/api/admin/update",
                         "/api/dormManager/login",
@@ -79,7 +80,8 @@ public class SecurityConfig {
                         "/api/come-back-late/delete/**",
                         "/api/come-back-late/update",
                         "/api/come-back-late/find",
-                        "/api/come-back-late/find-by-student"
+                        "/api/come-back-late/find-by-student",
+                        "/api/report/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

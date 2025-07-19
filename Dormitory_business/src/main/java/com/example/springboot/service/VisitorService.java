@@ -2,7 +2,7 @@ package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.springboot.entity.Visitor;
+import com.example.springboot.pojo.Visitor;
 
 
 public interface VisitorService extends IService<Visitor> {

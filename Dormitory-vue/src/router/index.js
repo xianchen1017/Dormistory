@@ -22,7 +22,7 @@ export const constantRoutes = [
             {path: '/myRoomInfo', name: 'MyRoomInfo', component: () => import("@/views/MyRoomInfo")},
             {path: '/applyRepairInfo', name: 'ApplyRepairInfo', component: () => import("@/views/ApplyRepairInfo")},
             {path: '/applyChangeRoom', name: 'ApplyChangeRoom', component: () => import("@/views/ApplyChangeRoom")},
-
+            {path: '/report', name: 'Report', component: () => import('@/views/Report.vue')},
             {path: '/selfInfo', name: 'SelfInfo', component: () => import("@/views/SelfInfo")},
         ]
     },

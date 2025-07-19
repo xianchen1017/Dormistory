@@ -1,4 +1,4 @@
-package com.example.springboot.entity;
+package com.example.springboot.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,29 +8,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 系统管理员
+ * 宿舍管理员
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
-@TableName(value = "admin")
-public class Admin {
+@TableName(value = "dorm_manager")
+public class DormManager {
 
-    @TableId(value = "username")
+    @TableId("username")
     private String username;
-    @TableField(value = "password")
+    @TableField("password")
     private String password;
-    @TableField(value = "name")
+    @TableField("dormbuild_id")
+    private int dormBuildId;
+    @TableField("name")
     private String name;
-    @TableField(value = "gender")
+    @TableField("gender")
     private String gender;
-    @TableField(value = "age")
+    @TableField("age")
     private int age;
-    @TableField(value = "phone_num")
+    @TableField("phone_num")
     private String phoneNum;
-    @TableField(value = "email")
+    @TableField("email")
     private String email;
     @TableField("avatar")
     private String avatar;

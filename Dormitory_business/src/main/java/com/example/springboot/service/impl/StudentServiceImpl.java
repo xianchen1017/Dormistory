@@ -3,11 +3,10 @@ package com.example.springboot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.entity.Student;
+import com.example.springboot.pojo.Student;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.StudentService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 
