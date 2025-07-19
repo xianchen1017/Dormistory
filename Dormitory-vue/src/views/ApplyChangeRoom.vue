@@ -11,7 +11,7 @@
         <div style="margin: 10px 0">
           <!--    搜索区-->
           <div style="margin: 10px 0">
-            <el-input v-model="search" clearable placeholder="请输入学号" prefix-icon="Search" style="width: 20%"/>
+            <el-input v-model="search" clearable placeholder="搜索申请记录" prefix-icon="Search" style="width: 20%"/>
             <el-button icon="Search" style="margin-left: 5px" type="primary" @click="load"></el-button>
             <div style="float: right">
               <el-tooltip content="添加" placement="top">

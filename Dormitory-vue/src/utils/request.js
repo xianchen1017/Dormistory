@@ -29,22 +29,32 @@ request.interceptors.request.use(config => {
 // 响应拦截器 - 处理401未授权
 request.interceptors.response.use(
     response => {
+        console.log('响应拦截器 - 原始响应:', response)
+        
         if (response.data.code === "401") {
             sessionStorage.clear()
             window.location.href = '/login'
         }
-        return {
-            code: response.data.code,
-            msg: response.data.msg,
-            data: response.data.data
-        };
+        
+        // 直接返回响应数据，让调用方处理
+        return response.data;
     },
     error => {
+        console.error('响应拦截器 - 错误:', error)
         if (error.response && error.response.status === 401) {
             sessionStorage.clear()
             window.location.href = '/login'
         }
-        return Promise.reject(error)
+        // 如果是网络错误或其他错误，返回一个标准格式的错误对象
+        return Promise.reject({
+            response: {
+                data: {
+                    code: "-1",
+                    msg: error.message || "网络错误",
+                    data: null
+                }
+            }
+        })
     }
 );
 

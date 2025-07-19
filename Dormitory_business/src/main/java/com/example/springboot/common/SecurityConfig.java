@@ -2,6 +2,7 @@ package com.example.springboot.common;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,9 +18,11 @@ public class SecurityConfig {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 允许所有OPTIONS请求
                 .antMatchers(
                         "/api/stu/login",
                         "/api/stu/register",
+                        "/api/stu/sendVerificationCode",
                         "/api/stu/stuNum",
                         "/api/stu/update",
                         "/api/stu/exist/**",
@@ -55,6 +58,7 @@ public class SecurityConfig {
                         "/api/room/checkRoomExist/**",
                         "/api/room/judgeHadBed/**",
                         "/api/adjustRoom/find",
+                        "/api/adjustRoom/findAll",
                         "/api/adjustRoom/add",
                         "/api/adjustRoom/update/**",
                         "/api/adjustRoom/delete/**",
@@ -81,7 +85,8 @@ public class SecurityConfig {
                         "/api/come-back-late/update",
                         "/api/come-back-late/find",
                         "/api/come-back-late/find-by-student",
-                        "/api/report/**"
+                        "/api/report/**",
+                        "/api/test/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -1,8 +1,7 @@
-axios.defaults.baseURL = '/api'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
+import request from '@/utils/request'
 
 
 export function useRegister() {
@@ -18,7 +17,8 @@ export function useRegister() {
         age: '',
         gender: '',
         email: '',
-        classroom:''
+        classroom:'',
+        verificationCode: ''
     })
 
     // 表单验证规则
@@ -76,12 +76,21 @@ export function useRegister() {
         classroom:[
             { required: true, message: '请输入班级', trigger: 'blur' },
             { min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur' }
+        ],
+        verificationCode: [
+            { required: true, message: '请输入验证码', trigger: 'blur' },
+            { len: 6, message: '验证码为6位数字', trigger: 'blur' }
         ]
     })
 
     // 加载状态
     const loading = ref(false)
     const registerFormRef = ref(null)
+    
+    // 验证码相关状态
+    const sendingCode = ref(false)
+    const countdown = ref(0)
+    const countdownTimer = ref(null)
 
     // 提交表单
     const submitForm = async () => {
@@ -99,29 +108,26 @@ export function useRegister() {
                 age: registerForm.age,       //
                 gender: registerForm.gender, //
                 email: registerForm.email,    //
-                classroom:registerForm.classroom
+                classroom: registerForm.classroom,
+                verificationCode: registerForm.verificationCode
             }
 
             console.log('提交的注册数据:', requestData) // 调试用
 
             // 调用注册API
-            const response = await axios.post('/stu/register', requestData, {
-                withCredentials: false,  // 根据你的需求设置true或false
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await request.post('/stu/register', requestData);
             console.log('注册响应:', response) // 调试用
 
-            if (response.data.code === "0") {
+            if (response.code === "0") {
                 ElMessage.success('注册成功！')
                 router.push('/login')
             } else {
-                ElMessage.error(response.data.msg || '注册失败')
+                ElMessage.error(response.msg || '注册失败')
             }
         } catch (error) {
+            console.error('注册错误:', error)
             if (error.response) {
-                ElMessage.error(error.response.data.msg || '注册失败')
+                ElMessage.error(error.response.data?.msg || '注册失败')
             } else if (error.message) {
                 console.error('表单验证失败:', error)
                 ElMessage.error('表单验证失败: ' + error.message)
@@ -133,11 +139,71 @@ export function useRegister() {
         }
     }
 
+    // 发送验证码
+    const sendVerificationCode = async () => {
+        // 验证邮箱格式
+        if (!registerForm.email) {
+            ElMessage.error('请先输入邮箱')
+            return
+        }
+        
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        if (!emailRegex.test(registerForm.email)) {
+            ElMessage.error('请输入正确的邮箱格式')
+            return
+        }
+        
+        try {
+            sendingCode.value = true
+            
+            console.log('发送验证码请求数据:', { email: registerForm.email })
+            
+            const response = await request.post('/stu/sendVerificationCode', {
+                email: registerForm.email
+            })
+            
+            console.log('验证码响应:', response)
+            
+            if (response.code === "0") {
+                ElMessage.success('验证码已发送到您的邮箱')
+                // 开始倒计时
+                countdown.value = 60
+                countdownTimer.value = setInterval(() => {
+                    countdown.value--
+                    if (countdown.value <= 0) {
+                        clearInterval(countdownTimer.value)
+                        countdownTimer.value = null
+                    }
+                }, 1000)
+            } else {
+                ElMessage.error(response.msg || '发送失败')
+            }
+        } catch (error) {
+            console.error('发送验证码错误:', error)
+            console.error('错误响应:', error.response)
+            ElMessage.error(error.response?.data?.msg || error.message || '发送验证码失败')
+        } finally {
+            sendingCode.value = false
+        }
+    }
+    
+    // 清理定时器
+    const clearCountdown = () => {
+        if (countdownTimer.value) {
+            clearInterval(countdownTimer.value)
+            countdownTimer.value = null
+        }
+    }
+
     return {
         registerForm,
         rules,
         loading,
         registerFormRef,
-        submitForm
+        submitForm,
+        sendingCode,
+        countdown,
+        sendVerificationCode,
+        clearCountdown
     }
 }

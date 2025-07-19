@@ -92,6 +92,27 @@
           />
         </el-form-item>
 
+        <!-- 验证码字段 -->
+        <el-form-item label="验证码" prop="verificationCode">
+          <div class="captcha-container">
+            <el-input
+                v-model="registerForm.verificationCode"
+                placeholder="请输入验证码"
+                prefix-icon="Key"
+                maxlength="6"
+            />
+            <el-button
+                type="primary"
+                @click="sendVerificationCode"
+                :loading="sendingCode"
+                :disabled="countdown > 0"
+                class="captcha-btn"
+            >
+              {{ countdown > 0 ? `${countdown}s后重试` : '获取验证码' }}
+            </el-button>
+          </div>
+        </el-form-item>
+
         <el-form-item label="手机号" prop="phone">
           <el-input
               v-model="registerForm.phone"
@@ -130,14 +151,24 @@
 
 <script setup>
 import { useRegister } from '@/assets/js/Register'
+import { onUnmounted } from 'vue'
 
 const {
   registerForm,
   rules,
   loading,
   registerFormRef,
-  submitForm
+  submitForm,
+  sendingCode,
+  countdown,
+  sendVerificationCode,
+  clearCountdown
 } = useRegister()
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  clearCountdown()
+})
 </script>
 
 <style scoped>
@@ -207,6 +238,7 @@ const {
 
 .captcha-btn {
   width: 120px;
+  white-space: nowrap;
 }
 
 .register-btn {

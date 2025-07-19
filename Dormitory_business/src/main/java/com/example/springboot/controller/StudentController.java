@@ -6,6 +6,8 @@ import com.example.springboot.pojo.Student;
 import com.example.springboot.pojo.User;
 import com.example.springboot.service.StudentService;
 import com.example.springboot.service.DormRoomService;
+import com.example.springboot.service.EmailService;
+import com.example.springboot.common.VerificationCodeManager;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +23,55 @@ public class StudentController {
     
     @Resource
     private DormRoomService dormRoomService;
+    
+    @Resource
+    private EmailService emailService;
+    
+    @Resource
+    private VerificationCodeManager verificationCodeManager;
+
+    /**
+     * 发送注册验证码
+     */
+    @PostMapping("/sendVerificationCode")
+    public Result<?> sendVerificationCode(@RequestBody Student student) {
+        try {
+            String email = student.getEmail();
+            if (email == null || email.trim().isEmpty()) {
+                return Result.error("-1", "邮箱不能为空");
+            }
+            
+            // 检查邮箱格式
+            if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                return Result.error("-1", "邮箱格式不正确");
+            }
+            
+            // 检查是否已有验证码且未过期
+            if (verificationCodeManager.hasCode(email)) {
+                return Result.error("-1", "验证码已发送，请稍后再试");
+            }
+            
+            // 生成验证码
+            String code = emailService.generateVerificationCode();
+            
+            // 发送邮件
+            boolean sent = emailService.sendVerificationCode(email, code);
+            if (sent) {
+                // 存储验证码
+                verificationCodeManager.storeCode(email, code);
+                return Result.success("验证码已发送到您的邮箱");
+            } else {
+                // 如果邮件发送失败，使用测试模式（仅用于开发测试）
+                System.out.println("邮件发送失败，使用测试模式");
+                System.out.println("测试验证码: " + code + " (仅用于开发测试)");
+                verificationCodeManager.storeCode(email, code);
+                return Result.success("测试模式：验证码已生成，请查看控制台输出。实际验证码: " + code);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("-1", "发送验证码失败: " + e.getMessage());
+        }
+    }
 
     /**
      * 学生注册
@@ -38,7 +89,23 @@ public class StudentController {
                 return Result.error("-1", "该学号已注册");
             }
 
-            // 2. 设置默认值
+            // 2. 验证邮箱验证码
+            String email = student.getEmail();
+            String verificationCode = student.getVerificationCode();
+            
+            if (email == null || email.trim().isEmpty()) {
+                return Result.error("-1", "邮箱不能为空");
+            }
+            
+            if (verificationCode == null || verificationCode.trim().isEmpty()) {
+                return Result.error("-1", "验证码不能为空");
+            }
+            
+            if (!verificationCodeManager.verifyCode(email, verificationCode)) {
+                return Result.error("-1", "验证码错误或已过期");
+            }
+
+            // 3. 设置默认值
             if(student.getName() == null) {
                 student.setName(student.getUsername());
             }

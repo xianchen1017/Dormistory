@@ -36,4 +36,8 @@ public class Student {
     private String avatar;
     @TableField("classroom")
     private String classroom;
+    
+    // 验证码字段（不映射到数据库）
+    @TableField(exist = false)
+    private String verificationCode;
 }

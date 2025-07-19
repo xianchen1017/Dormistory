@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.springboot.pojo.AdjustRoom;
 
+import java.util.List;
+
 public interface AdjustRoomService extends IService<AdjustRoom> {
 
     //查询调宿申请
@@ -17,5 +19,8 @@ public interface AdjustRoomService extends IService<AdjustRoom> {
 
     // 添加
     int addApply(AdjustRoom adjustRoom);
+    
+    // 查找所有调宿申请（调试用）
+    List<AdjustRoom> findAll();
 
 }

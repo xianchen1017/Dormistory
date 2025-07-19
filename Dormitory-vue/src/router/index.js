@@ -5,6 +5,8 @@ import {createRouter, createWebHistory} from "vue-router";
 export const constantRoutes = [
     {path: '/Login', name: 'Login', component: () => import("@/views/Login")},
     {path: '/Register', name: 'Register', component: () => import("@/views/Register")},
+    {path: '/test', name: 'TestApi', component: () => import("@/views/TestApi")},
+    {path: '/test-apply-change-room', name: 'TestApplyChangeRoom', component: () => import("@/views/TestApplyChangeRoom")},
     {
         path: '/Layout', name: 'Layout', component: Layout, children: [
             //
