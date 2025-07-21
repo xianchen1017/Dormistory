@@ -37,4 +37,11 @@ public class DormRoom {
     private String fourthBed;
     @TableField("evaluation")
     private String evaluation; // 新增评价字段
+
+
+    public int getDormRoomId() {
+        return dormRoomId;
+    }
+
+
 }
