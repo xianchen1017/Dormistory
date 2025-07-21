@@ -34,4 +34,7 @@ public class Visitor {
     @TableField("content")
     private String content;
 
+    public String getName() {
+        return visitorName;
+    }
 }
